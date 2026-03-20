@@ -15,27 +15,25 @@ replace_env_vars_in_file() {
         return
     fi
 
-    TMP_FILE=$(mktemp)
+    # 使用 sed 一次性替换所有 ${VAR} 格式的变量
+    # 构建 sed 替换命令
+    SED_CMD="s"
 
-    while IFS= read -r line; do
-        new_line="$line"
-        while echo "$new_line" | grep -q '\${[A-Za-z_][A-Za-z0-9_]*}'; do
-            var=$(echo "$new_line" | sed -n 's/.*\${\([A-Za-z_][A-Za-z0-9_]*\)}.*/\1/p')
-            if [ -z "$var" ]; then
-                break
-            fi
-            value=$(eval echo "\$$var" 2>/dev/null)
-            if [ -n "$value" ]; then
-                new_line=$(echo "$new_line" | sed "s|\${${var}}|${value}|")
-            else
-                new_line=$(echo "$new_line" | sed "s|\${${var}}|")
-            fi
-        done
-        echo "$new_line"
-    done < "$CONFIG_FILE" > "$TMP_FILE"
+    # 遍历所有环境变量，生成替换规则
+    for var in $(set | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' | cut -d= -f1); do
+        # 跳过内部变量
+        case "$var" in
+            PATH|HOME|USER|PWD|SHELL|TERM|HOSTNAME|IFS) continue ;;
+        esac
+        value=$(eval echo \$$var 2>/dev/null)
+        # 转义 value 中的特殊字符（/ 和 &）
+        value=$(echo "$value" | sed 's/[&/]/\\&/g')
+        SED_CMD="${SED_CMD};s/\${${var}}/${value}/g"
+    done
 
-    cp "$TMP_FILE" "$CONFIG_FILE"
-    rm -f "$TMP_FILE"
+    # 执行替换
+    sed "$SED_CMD" "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+    mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
     echo "[Homer] Environment variables replaced"
 }
 
