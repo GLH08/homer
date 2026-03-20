@@ -28,19 +28,15 @@ replace_env_vars_in_file() {
             if [ -n "$value" ]; then
                 new_line=$(echo "$new_line" | sed "s|\${${var}}|${value}|")
             else
-                new_line=$(echo "$new_line" | sed "s|\${${var}}||")
+                new_line=$(echo "$new_line" | sed "s|\${${var}}|")
             fi
         done
         echo "$new_line"
     done < "$CONFIG_FILE" > "$TMP_FILE"
 
-    if ! cmp -s "$CONFIG_FILE" "$TMP_FILE" 2>/dev/null; then
-        if [ -w "$CONFIG_FILE" ] 2>/dev/null; then
-            cp "$TMP_FILE" "$CONFIG_FILE"
-            echo "[Homer] Environment variables replaced"
-        fi
-    fi
+    cp "$TMP_FILE" "$CONFIG_FILE"
     rm -f "$TMP_FILE"
+    echo "[Homer] Environment variables replaced"
 }
 
 # 默认资源配置（原始逻辑）
