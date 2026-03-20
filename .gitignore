@@ -22,7 +22,7 @@ yarn-error.log*
 
 # App configuration
 config.yml
-config-example.yml
+.env
 package-lock.json
 pnpm-lock.yaml
 

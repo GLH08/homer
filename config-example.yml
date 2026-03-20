@@ -1,0 +1,343 @@
+# ============================================
+# Homer 配置文件示例
+# ============================================
+#
+# 使用说明：
+# 1. 复制此文件为 config.yml（与 docker-compose.yml 同级）
+# 2. 按需修改配置内容
+# 3. 使用 docker-compose up -d --build 启动
+#
+
+---
+title: "Dashboard"
+subtitle: "Homer"
+logo: "logo.png"
+
+header: true
+footer: '<p>使用 ❤️ 和 <a href="https://github.com/bastienwirtz/homer">Homer</a> 构建</p>'
+
+theme: homarr
+columns: "4"
+connectivityCheck: true
+
+defaults:
+  layout: columns
+  colorTheme: light
+
+colors:
+  light:
+    highlight-primary: "#3a6095"
+    highlight-secondary: "#466370"
+    background: "#f7f9fb"
+    card-background: "#f0f4f7"
+    text: "#2c3437"
+  dark:
+    highlight-primary: "#9ec2fe"
+    highlight-secondary: "#bbd9e9"
+    background: "#0f1419"
+    card-background: "#1a2332"
+    text: "#e5eaef"
+
+services:
+
+  # ============================================
+  # 基础分组
+  # ============================================
+
+  - name: "信息"
+    icon: "fas fa-info-circle"
+    items:
+      # ----- 时钟（内置） -----
+      - name: "时钟"
+        type: "Clock"
+        icon: "fas fa-clock"
+        showDate: true
+        hour12: false
+        locale: "zh-CN"
+
+      # ----- 天气（免费接口，无需 API Key） -----
+      # 使用 wttr.in 免费天气接口，无需注册
+      - name: "天气"
+        type: "OpenWeather"
+        icon: "fas fa-cloud-sun"
+        location: "Beijing"
+        units: "metric"
+        tag: "天气"
+
+      # ----- 天气（OpenWeatherMap API） -----
+      # 需要申请 API Key: https://openweathermap.org/api
+      # - name: "天气-API"
+      #   type: "OpenWeather"
+      #   icon: "fas fa-cloud-sun"
+      #   apikey: "${OPENWEATHER_API_KEY}"    # 使用环境变量
+      #   location: "Tokyo"
+      #   units: "metric"
+      #   tag: "天气"
+
+      # ----- Ping 检测 -----
+      # 检测网站是否可达，显示延迟
+      - name: "Google"
+        type: "Ping"
+        icon: "fas fa-globe"
+        url: "https://www.google.com"
+        tag: "网络"
+
+      # ----- 复制到剪贴板 -----
+      # 点击复制按钮复制指定文本
+      - name: "复制邮箱"
+        type: "CopyToClipboard"
+        icon: "fas fa-envelope"
+        subtitle: "点击复制邮箱地址"
+        clipboard: "example@email.com"
+        tag: "工具"
+
+  # ============================================
+  # 媒体服务（需对应服务运行）
+  # ============================================
+
+  - name: "媒体服务"
+    icon: "fas fa-play-circle"
+    items:
+      # ----- Emby / Jellyfin -----
+      # 显示媒体库统计
+      # - name: "Emby"
+      #   type: "Emby"
+      #   icon: "fas fa-film"
+      #   url: "https://emby.example.com"
+      #   apikey: "${EMBY_API_KEY}"
+      #   libraryType: "movies"    # 可选: movies, series, music
+      #   tag: "媒体"
+
+      # ----- Plex -----
+      # - name: "Plex"
+      #   type: "Plex"
+      #   icon: "fas fa-play"
+      #   url: "https://plex.example.com/web"
+      #   endpoint: "https://plex.example.com"
+      #   token: "${PLEX_TOKEN}"
+      #   tag: "媒体"
+
+      # ----- Tautulli (Plex 监控) -----
+      # - name: "Tautulli"
+      #   type: "Tautulli"
+      #   icon: "fas fa-chart-line"
+      #   url: "https://tautulli.example.com"
+      #   apikey: "${TAUTULLI_API_KEY}"
+      #   checkInterval: 5000
+      #   tag: "监控"
+
+      # ----- Sonarr (电视剧管理) -----
+      # - name: "Sonarr"
+      #   type: "Sonarr"
+      #   icon: "fas fa-tv"
+      #   url: "https://sonarr.example.com"
+      #   apikey: "${SONARR_API_KEY}"
+      #   tag: "下载"
+
+      # ----- Radarr (电影管理) -----
+      # - name: "Radarr"
+      #   type: "Radarr"
+      #   icon: "fas fa-film"
+      #   url: "https://radarr.example.com"
+      #   apikey: "${RADARR_API_KEY}"
+      #   tag: "下载"
+
+  # ============================================
+  # 系统监控（需对应服务运行）
+  # ============================================
+
+  - name: "系统监控"
+    icon: "fas fa-server"
+    items:
+      # ----- Glances (系统监控) -----
+      # - name: "系统指标"
+      #   type: "Glances"
+      #   icon: "fas fa-heartbeat"
+      #   url: "http://192.168.1.100:61208"
+      #   stats: [cpu, mem, load]
+      #   tag: "监控"
+
+      # ----- Pi-hole (DNS 广告拦截) -----
+      # - name: "Pi-hole"
+      #   type: "PiHole"
+      #   icon: "fas fa-shield-alt"
+      #   url: "http://192.168.1.1/admin"
+      #   apikey: "${PIHOLE_API_KEY}"
+      #   tag: "DNS"
+
+      # ----- Uptime Kuma (服务监控) -----
+      # - name: "Uptime Kuma"
+      #   type: "UptimeKuma"
+      #   icon: "fas fa-clock"
+      #   url: "https://uptime.example.com"
+      #   slug: "default"
+      #   tag: "监控"
+
+      # ----- Portainer (Docker 管理) -----
+      # - name: "Portainer"
+      #   type: "Portainer"
+      #   icon: "fas fa-docker"
+      #   url: "https://portainer.example.com"
+      #   apikey: "${PORTAINER_API_KEY}"
+      #   tag: "容器"
+
+      # ----- Proxmox (虚拟化平台) -----
+      # - name: "Proxmox"
+      #   type: "Proxmox"
+      #   icon: "fas fa-server"
+      #   url: "https://proxmox.example.com:8006"
+      #   node: "pve"
+      #   api_token: "${PROXMOX_API_TOKEN}"
+      #   warning_value: 50
+      #   danger_value: 80
+      #   tag: "虚拟化"
+
+      # ----- Speedtest Tracker (网速测试) -----
+      # - name: "Speedtest"
+      #   type: "SpeedtestTracker"
+      #   icon: "fas fa-tachometer-alt"
+      #   url: "https://speedtest.example.com"
+      #   tag: "网速"
+
+  # ============================================
+  # 下载服务
+  # ============================================
+
+  - name: "下载服务"
+    icon: "fas fa-download"
+    items:
+      # ----- qBittorrent -----
+      # - name: "qBittorrent"
+      #   type: "qBittorrent"
+      #   icon: "fas fa-cloud-download-alt"
+      #   url: "https://qbittorrent.example.com"
+      #   rateInterval: 2000
+      #   torrentInterval: 5000
+      #   tag: "下载"
+
+      # ----- Transmission -----
+      # - name: "Transmission"
+      #   type: "Transmission"
+      #   icon: "fas fa-upload"
+      #   url: "http://192.168.1.100:9091"
+      #   auth: "${TRANSMISSION_AUTH}"
+      #   interval: 5000
+      #   tag: "下载"
+
+      # ----- SABnzbd (Usenet) -----
+      # - name: "SABnzbd"
+      #   type: "SABnzbd"
+      #   icon: "fas fa-download"
+      #   url: "https://sabnzbd.example.com"
+      #   apikey: "${SABNZBD_API_KEY}"
+      #   downloadInterval: 5000
+      #   tag: "下载"
+
+  # ============================================
+  # 订阅阅读
+  # ============================================
+
+  - name: "订阅阅读"
+    icon: "fas fa-book-reader"
+    items:
+      # ----- FreshRSS -----
+      # - name: "FreshRSS"
+      #   type: "FreshRSS"
+      #   icon: "fas fa-rss"
+      #   url: "https://rss.example.com"
+      #   username: "${FRESHRSS_USER}"
+      #   password: "${FRESHRSS_PASS}"
+      #   updateInterval: 5000
+      #   tag: "订阅"
+
+      # ----- Miniflux -----
+      # - name: "Miniflux"
+      #   type: "Miniflux"
+      #   icon: "fas fa-book"
+      #   url: "https://miniflux.example.com"
+      #   apikey: "${MINIFLUX_API_KEY}"
+      #   style: "counter"
+      #   checkInterval: 60000
+      #   tag: "订阅"
+
+      # ----- Wallabag -----
+      # - name: "Wallabag"
+      #   type: "Wallabag"
+      #   icon: "fas fa-archive"
+      #   url: "https://wallabag.example.com"
+      #   tag: "阅读"
+
+  # ============================================
+  # 云存储与密码
+  # ============================================
+
+  - name: "云存储"
+    icon: "fas fa-cloud"
+    items:
+      # ----- Nextcloud -----
+      # - name: "Nextcloud"
+      #   type: "Nextcloud"
+      #   icon: "fas fa-cloud"
+      #   url: "https://nextcloud.example.com"
+      #   tag: "云盘"
+
+      # ----- Vaultwarden (密码管理) -----
+      # - name: "Vaultwarden"
+      #   type: "Vaultwarden"
+      #   icon: "fas fa-key"
+      #   url: "https://vault.example.com"
+      #   tag: "密码"
+
+      # ----- Immich (照片备份) -----
+      # - name: "Immich"
+      #   type: "Immich"
+      #   icon: "fas fa-photo-video"
+      #   url: "https://immich.example.com"
+      #   apikey: "${IMMICH_API_KEY}"
+      #   tag: "照片"
+
+  # ============================================
+  # 智能家居
+  # ============================================
+
+  - name: "智能家居"
+    icon: "fas fa-home"
+    items:
+      # ----- Home Assistant -----
+      # - name: "Home Assistant"
+      #   type: "HomeAssistant"
+      #   icon: "fas fa-home"
+      #   url: "https://ha.example.com"
+      #   apikey: "${HA_API_KEY}"
+      #   items: [name, version, entities]
+      #   tag: "家居"
+
+      # ----- OpenHAB -----
+      # - name: "OpenHAB"
+      #   type: "OpenHAB"
+      #   icon: "fas fa-home"
+      #   url: "https://openhab.example.com"
+      #   apikey: "${OPENHAB_API_KEY}"
+      #   things: true
+      #   items: true
+      #   tag: "家居"
+
+# ============================================
+# 环境变量使用说明
+# ============================================
+#
+# 配置文件中使用 ${VAR_NAME} 引用环境变量
+#
+# 示例:
+#   apikey: "${OPENWEATHER_API_KEY}"
+#   url: "${SONARR_URL:-http://localhost:8989}"  # 带默认值
+#
+# 部署时设置环境变量:
+#   export OPENWEATHER_API_KEY=your_api_key
+#   docker run -e OPENWEATHER_API_KEY=your_api_key ...
+#
+# 或使用 .env 文件 + docker-compose:
+#   创建 .env 文件（已在 .gitignore 中）
+#   OPWTHER_API_KEY=your_key
+#   执行: docker-compose up
+#
