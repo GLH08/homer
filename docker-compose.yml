@@ -19,6 +19,8 @@ services:
       - INIT_ASSETS=0
     volumes:
       - ./config.yml:/www/assets/config.yml:ro
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "-Y", "off", "-T", "5", "-t", "1", "--spider", "http://127.0.0.1:8080/"]
       interval: 30s
