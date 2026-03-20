@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Homer 环境变量替换脚本
-# 将 config.yml 中的 ${VAR_NAME} 替换为实际的环境变量值
+# Homer 环境变量替换 + 启动脚本
 
 CONFIG_FILE="/www/assets/config.yml"
 
+# 替换环境变量
 replace_env_vars_in_file() {
     if [ ! -f "$CONFIG_FILE" ]; then
         return
@@ -15,13 +15,10 @@ replace_env_vars_in_file() {
         return
     fi
 
-    # 创建临时文件
     TMP_FILE=$(mktemp)
 
-    # 逐行处理，替换环境变量
     while IFS= read -r line; do
         new_line="$line"
-        # 匹配 ${VAR_NAME} 格式
         while echo "$new_line" | grep -q '\${[A-Za-z_][A-Za-z0-9_]*}'; do
             var=$(echo "$new_line" | sed -n 's/.*\${\([A-Za-z_][A-Za-z0-9_]*\)}.*/\1/p')
             if [ -z "$var" ]; then
@@ -37,9 +34,7 @@ replace_env_vars_in_file() {
         echo "$new_line"
     done < "$CONFIG_FILE" > "$TMP_FILE"
 
-    # 如果有变化则更新文件
     if ! cmp -s "$CONFIG_FILE" "$TMP_FILE" 2>/dev/null; then
-        # 检查文件是否只读（挂载的 :ro 文件）
         if [ -w "$CONFIG_FILE" ] 2>/dev/null; then
             cp "$TMP_FILE" "$CONFIG_FILE"
             echo "[Homer] Environment variables replaced"
@@ -48,8 +43,21 @@ replace_env_vars_in_file() {
     rm -f "$TMP_FILE"
 }
 
+# 默认资源配置（原始逻辑）
+if [[ "${INIT_ASSETS}" == "1" ]] && [[ ! -f "/www/assets/config.yml" ]]; then
+    echo "No configuration found, installing default config & assets"
+    if [[ -w "/www/assets/" ]]; then
+        while true; do echo n; done | cp -Ri /www/default-assets/* /www/assets/
+        yes n | cp -i /www/default-assets/config.yml.dist /www/assets/config.yml
+    else
+        echo "Assets directory not writable, skipping default config install."
+    fi
+fi
+
+# 替换环境变量
 replace_env_vars_in_file
 
-# 启动 lighttpd
+# 启动服务
 echo "Starting webserver"
+exec 3>&1
 exec lighttpd -D -f /lighttpd.conf
