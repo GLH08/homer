@@ -2,7 +2,7 @@
   <div :class="{ 'component-error': error }">
     <div class="card" :class="item.class">
       <a
-        :href="item.url || `https://openweathermap.org/city/${id}`"
+        :href="clickUrl"
         :target="item.target"
         rel="noreferrer"
       >
@@ -59,6 +59,7 @@ export default {
     error: false,
     timezoneOffset: 0,
     weatherIcon: "fas fa-cloud-sun",
+    usingFreeApi: false,
   }),
   computed: {
     temperature: function () {
@@ -78,6 +79,18 @@ export default {
     icon: function () {
       return this.owmIcon || this.weatherIcon;
     },
+    clickUrl: function () {
+      if (this.item.url) {
+        return this.item.url;
+      }
+      if (this.usingFreeApi) {
+        // wttr.in 链接
+        const location = encodeURIComponent(this.item.location || "Beijing");
+        return `https://wttr.in/${location}`;
+      }
+      // OpenWeatherMap 链接
+      return `https://openweathermap.org/city/${this.id}`;
+    },
   },
   created() {
     this.fetchWeather();
@@ -88,15 +101,17 @@ export default {
 
       try {
         if (apiKey) {
+          this.usingFreeApi = false;
           // 使用 OpenWeatherMap API
           await this.fetchFromOWM(apiKey);
         } else {
+          this.usingFreeApi = true;
           // 使用 wttr.in 免费接口（无需 API Key）
           await this.fetchFromWttr();
         }
       } catch (e) {
         console.error("Weather error:", e);
-        this.name = this.item.name;
+        this.name = this.item.name || "天气";
         this.error = true;
       }
     },
