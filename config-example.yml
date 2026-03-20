@@ -66,13 +66,14 @@ services:
 
       # ----- 天气（OpenWeatherMap API） -----
       # 需要申请 API Key: https://openweathermap.org/api
-      # - name: "天气-API"
-      #   type: "OpenWeather"
-      #   icon: "fas fa-cloud-sun"
-      #   apikey: "${OPENWEATHER_API_KEY}"    # 使用环境变量
-      #   location: "Tokyo"
-      #   units: "metric"
-      #   tag: "天气"
+      # 在 .env 文件中设置 OPENWEATHER_API_KEY
+      - name: "天气-API"
+        type: "OpenWeather"
+        icon: "fas fa-cloud-sun"
+        apikey: "${OPENWEATHER_API_KEY}"
+        location: "Tokyo"
+        units: "metric"
+        tag: "天气"
 
       # ----- Ping 检测 -----
       # 检测网站是否可达，显示延迟
