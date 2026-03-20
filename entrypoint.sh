@@ -17,7 +17,7 @@ replace_env_vars_in_file() {
 
     # 使用 sed 一次性替换所有 ${VAR} 格式的变量
     # 构建 sed 替换命令
-    SED_CMD="s"
+    SED_CMD=""
 
     # 遍历所有环境变量，生成替换规则
     for var in $(set | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' | cut -d= -f1); do
@@ -28,11 +28,11 @@ replace_env_vars_in_file() {
         value=$(eval echo \$$var 2>/dev/null)
         # 转义 value 中的特殊字符（/ 和 &）
         value=$(echo "$value" | sed 's/[&/]/\\&/g')
-        SED_CMD="${SED_CMD};s/\${${var}}/${value}/g"
+        SED_CMD="${SED_CMD} -e s/\${${var}}/${value}/g"
     done
 
     # 执行替换
-    sed "$SED_CMD" "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+    sed ${SED_CMD} "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
     mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
     echo "[Homer] Environment variables replaced"
 }
