@@ -107,7 +107,7 @@
       }
 
       .first-line {
-        min-height: 100px;
+        min-height: 60px;
         vertical-align: center;
         background-color: var(--highlight-primary);
 
@@ -156,9 +156,6 @@
         .navbar-menu {
           background-color: inherit;
         }
-      }
-      .navbar-end {
-        text-align: right;
       }
     }
 
@@ -219,21 +216,21 @@
       }
 
       .tag {
-        color: #ffffff;
-        position: absolute;
-        bottom: 1rem;
-        right: -0.2rem;
-        width: 3px;
-        overflow: hidden;
-        transition: all 0.2s ease-out;
-        padding: 0;
+        position: static;
+        display: inline-flex;
+        border-radius: 9999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        overflow: visible;
 
         &:not([class*="is-"]) {
-          background-color: var(--highlight-secondary);
+          background-color: var(--surface-container-high);
+          color: var(--text-subtitle);
         }
 
         .tag-text {
-          display: none;
+          display: inline;
         }
       }
 
@@ -250,21 +247,16 @@
       }
 
       .card:hover {
-        transform: translate(0, -3px);
+        transform: translate(0, -2px);
 
         .tag {
-          width: auto;
-          padding: 0 0.75em;
-
-          .tag-text {
-            display: block;
-          }
+          background-color: var(--highlight-primary);
+          color: #ffffff;
         }
       }
 
       .card-content {
-        height: 85px;
-        padding: 1.3rem;
+        padding: 1.5rem;
       }
 
       .layout-vertical {

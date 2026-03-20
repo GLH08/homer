@@ -2,7 +2,7 @@
   <Generic :item="item" :title="error.message" class="component-error">
     <template #content>
       <p class="title is-4">{{ item.name }}</p>
-      <p class="subtitle is-6">Failed to load component</p>
+      <p class="subtitle is-6">{{ $t("error.failedToLoad") }}</p>
     </template>
     <template #indicator>⚠️</template>
   </Generic>

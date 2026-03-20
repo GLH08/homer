@@ -1,21 +1,24 @@
-# Tips & Tricks
+# 技巧与提示
 
-Here is a collection of neat tips and tricks that Homer users have come up with!
+这里收集了 Homer 用户们发现的一些实用技巧！
 
-## Dashboard icons
+## 仪表盘图标
 
-Great source to find service icons
+查找服务图标的好资源：
 
 - <https://selfh.st/icons/>
 - <https://github.com/homarr-labs/dashboard-icons>
 
-## Use Homer as a custom "new tab" page
+## 将 Homer 用作自定义"新标签页"
 
-#### `by @vosdev`
+#### `@vosdev` 提供
 
-These extensions for [Firefox](https://addons.mozilla.org/firefox/addon/custom-new-tab-page) and [Chrome & Friends](https://chrome.google.com/webstore/detail/new-tab-changer/occbjkhimchkolibngmcefpjlbknggfh) allow you to have your homer dashboard in your new tab page, while leaving focus on the address bar meaning you can still type right away if you want to search or go to a page that is not on your homer dash.
+以下浏览器扩展可以让您在新标签页中显示 Homer 仪表盘，同时保持地址栏焦点意味着您仍然可以随时输入搜索或跳转：
 
-The Firefox extension loads Homer in an iframe on your new tab page, meaning you have to add `target: '_top'` to each of your items.
+Firefox 扩展：[Firefox](https://addons.mozilla.org/firefox/addon/custom-new-tab-page)
+Chrome 及相关浏览器：[Chrome & Friends](https://chrome.google.com/webstore/detail/new-tab-changer/occbjkhimchkolibngmcefpjlbknggfh)
+
+Firefox 扩展将 Homer 加载到新标签页的 iframe 中，因此您需要在每个项目中添加 `target: '_top'`。
 
 ```yaml
 - name: "Reddit"
@@ -29,18 +32,17 @@ The Firefox extension loads Homer in an iframe on your new tab page, meaning you
   target: '_top'
 ```
 
-## YAML Anchors
+## YAML 锚点
 
-#### `by @JamiePhonic`
+#### `@JamiePhonic` 提供
 
-Since Homer is configured using YAML, it supports all of YAML's helpful features, such as anchoring!
+由于 Homer 使用 YAML 配置，因此支持 YAML 的所有实用功能，例如锚点！
 
-For example, you can define tags and tag styles for each "item" in a service.
-Using Anchoring, you can define all your tags and their styles once like this: (for example)
+例如，您可以为服务中的每个"项目"定义标签和标签样式。使用锚点，您可以像这样一次性定义所有标签及其样式：（例如）
 
 ```yaml
-# Some pre-defined tag styles. reference these using <<: *{NAME} inside an item definition; For Example, <<: *Apps
-tags: 
+# 一些预定义的标签样式。在项目定义中用 <<: *{名称} 引用；例如，<<: *Apps
+tags:
   Favourite: &Favourite
     - tag: "Favourite"
       tagstyle: "is-medium is-primary"
@@ -49,21 +51,21 @@ tags:
       tagstyle: "is-medium is-success"
   Apps: &Apps
     - tag: "App"
-      tagstyle: "is-medium is-info"      
+      tagstyle: "is-medium is-info"
 ```
 
-and then simply reference these pre-defined (anchored) tags in each item like so:
+然后只需在每个项目中这样引用预定义（锚定）的标签：
 
 ```yaml
 - name: "VS Code"
   logo: "/assets/vscode.png"
   subtitle: "Develop Code Anywhere, On Anything!"
-  <<: *Apps # Reference to the predefined "App" Tag
+  <<: *Apps # 引用预定义的"App"标签
   url: "https://vscode.example.com/"
-  target: "_blank" # optional html tag target attribute
-````
+  target: "_blank" # 可选的 HTML 标签 target 属性
+```
 
-Then when Homer reads your config, it will substitute your anchors automatically, the above example is equal to:
+然后 Homer 读取配置时会自动替换您的锚点，上述示例等同于：
 
 ```yaml
 - name: "VS Code"
@@ -72,59 +74,61 @@ Then when Homer reads your config, it will substitute your anchors automatically
   tag: "App"
   tagstyle: "is-medium is-info"
   url: "https://vscode.example.com/"
-  target: "_blank" # optional html tag target attribute
+  target: "_blank" # 可选的 HTML 标签 target 属性
 ```
 
-The end result is that if you want to update the name or style of any particular tag, just update it once, in the tags section!
-Great if you have a lot of services or a lot of tags!  
+最终效果是：如果您想更新任何特定标签的名称或样式，只需在标签部分更新一次即可！
+如果您有很多服务或很多标签，这特别有用！
 
-## YAML auto complete with a YAML schema 
+## YAML 自动补全与 YAML Schema
 
-A lot of editor support auto completion, see <https://www.schemastore.org/json/>   
-The homer schema is available here: <https://raw.githubusercontent.com/bastienwirtz/homer/main/.schema/config-schema.json>
+许多编辑器支持自动补全，参见 <https://www.schemastore.org/json/>
+Homer Schema 在此处可用：<https://raw.githubusercontent.com/bastienwirtz/homer/main/.schema/config-schema.json>
 
-For example with IntelliJ you can define:
+例如在 IntelliJ 中可以这样定义：
 
 ```yaml
 # $schema: https://raw.githubusercontent.com/bastienwirtz/homer/main/.schema/config-schema.json
 ```
-With VSCode you can define it like this:
+
+在 VSCode 中可以这样定义：
+
 ```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bastienwirtz/homer/main/.schema/config-schema.json
 ```
 
-## Remotely edit your config with Code Server
+## 使用 Code Server 远程编辑配置
 
-#### `by @JamiePhonic`
+#### `@JamiePhonic` 提供
 
-Homer doesn't yet provide a way to edit your configuration from inside Homer itself, but that doesn't mean it can't be done!
+Homer 本身尚未提供从内部编辑配置的方式，但这并不意味着不能做到！
 
-You can setup and use [Code-Server](https://github.com/cdr/code-server) to edit your `config.yml` file from anywhere!
+您可以设置并使用 [Code-Server](https://github.com/cdr/code-server) 从任何地方编辑您的 `config.yml` 文件。
 
-If you're running Homer in docker, you can setup a Code-Server container and pass your homer config directory into it.
-Simply pass your homer config directory as an extra -v parameter to your code-server container:
+如果您在 Docker 中运行 Homer，可以设置一个 Code-Server 容器并将您的 homer 配置目录传入。
+只需将 homer 配置目录作为额外的 -v 参数传递给 code-server 容器：
 
 ```sh
 -v '/your/local/homer/config-dir/':'/config/homer':'rw'
 ```
 
-This will map your homer config directory (For example, /docker/appdata/homer/) into code-server's `/config/` directory, in a sub folder called `homer`
+这会将您的 homer 配置目录（例如 /docker/appdata/homer/）映射到 code-server 的 `/config/` 目录中的 `homer` 子文件夹中。
 
-As a bonus, Code-Server puts the "current folder" as a parameter in the URL bar, so you could add a `links:` entry in Homer that points to your code-server instance with the directory pre-filled for essentially 1 click editing!
+另外，Code-Server 会在 URL 栏中放置"当前文件夹"作为参数，所以您可以在 Homer 中添加一个 `links:` 条目，指向您的 code-server 实例并预填目录，实现一键编辑！
 
-For example:
+例如：
 
 ```yml
 links:
-  - name: Edit config
+  - name: 编辑配置
     icon: fas fa-cog
     url: https://vscode.example.net/?folder=/config/homer
-    target: "_blank" # optional html tag target attribute
+    target: "_blank" # 可选的 HTML 标签 target 属性
 ```
 
-where the path after `?folder=` is the path to the folder where you mounted your homer config INSIDE the Code-Server container.
+其中 `?folder=` 后的路径是您**在 Code-Server 容器内部**挂载的 homer 配置目录的路径。
 
-### Example Code-Server docker create command
+### Code-Server Docker 创建命令示例
 
 ```sh
 docker create \
@@ -141,13 +145,13 @@ docker create \
   linuxserver/code-server
 ```
 
-## Get the news headlines in Homer
+## 在 Homer 中获取新闻头条
 
-### Mapping Fields
+### 字段映射
 
-Most times, the url you're getting headlines from follows a different schema than the one expected by Homer.
+大多数情况下，您获取头条新闻的 URL 所遵循的 schema 与 Homer 期望的不同。
 
-For example, if you would like to show jokes from ChuckNorris.io, you'll find that the url <https://api.chucknorris.io/jokes/random> is giving you info like this:
+例如，如果您想显示来自 ChuckNorris.io 的笑话，您会发现 URL <https://api.chucknorris.io/jokes/random> 返回的信息如下：
 
 ```json
 {
@@ -161,7 +165,7 @@ For example, if you would like to show jokes from ChuckNorris.io, you'll find th
 }
 ```
 
-but... you need that info to be transformed to something like this:
+但...您需要将这些信息转换为类似这样的格式：
 
 ```json
 {
@@ -170,7 +174,7 @@ but... you need that info to be transformed to something like this:
 }
 ```
 
-Now, you can do that using the `mapping` field in your `message` configuration. This example would be something like this:
+现在，您可以使用 `message` 配置中的 `mapping` 字段来实现这种转换。示例配置如下：
 
 ```yml
 message:
@@ -180,51 +184,50 @@ message:
     content: 'value'
 ```
 
-As you would see, using the ID as a title doesn't seem nice, that's why when a field is empty it would keep the default values, like this:
+如您所见，用 ID 作为标题看起来不太友好，因此在字段为空时它会保留默认值，如下所示：
 
 ```yml
 message:
   url: https://api.chucknorris.io/jokes/random
   mapping:
     content: 'value'
-  title: "Chuck Norris Facts!"
+  title: "Chuck Norris 冷知识！"
 ```
 
-and even an error message in case the `url` didn't respond or threw an error:
+甚至在 `url` 没有响应或出错时显示错误消息：
 
 ```yml
 message:
   url: https://api.chucknorris.io/jokes/random
   mapping:
     content: 'value'
-  title: "Chuck Norris Facts!"
-  content: "Message could not be loaded"
+  title: "Chuck Norris 冷知识！"
+  content: "无法加载消息"
 ```
 
-#### `by @JamiePhonic`
+#### `@JamiePhonic` 提供
 
-Homer allows you to set a "message" that will appear at the top of the page, however, you can also supply a `url:`.
+Homer 允许您设置一个"消息"，它将显示在页面顶部，当然您也可以提供 `url:`。
 
-If the URL you specified returns a JSON object that defines a `title` and `content` item, homer will replace these values from your `config.yml` with the ones in the returned object.
+如果您指定的 URL 返回一个定义 `title` 和 `content` 项目的 JSON 对象，homer 将用返回对象中的值替换 `config.yml` 中的这些值。
 
-So, using [Node-Red](https://nodered.org/docs/getting-started/) and a quick flow, you can process an RSS feed to replace the message with a news item!
+因此，使用 [Node-Red](https://nodered.org/docs/getting-started/) 和一个快速流程，您可以处理 RSS 提要来用新闻项目替换消息！
+要开始使用，只需将[此流程](https://flows.nodered.org/flow/4b6406c9a684c26ace0430dd1826e95d)导入您的 Node-Red 实例，并将"获取新闻 RSS 提要"节点中的 RSS 提要更改为您选择的即可！
 
-To get started, simply import [this flow](https://flows.nodered.org/flow/4b6406c9a684c26ace0430dd1826e95d) into your Node-Red instance and change the RSS feed in the "Get News RSS Feed" node to one of your choosing!
+目前已在 BBC News 和 Sky News 上测试过该流程，但如果其他 RSS 提要不适用，应该也不难修改！
 
-So far, the flow has been tested with BBC News and Sky News, however it should be easy to modify the flow to work with other RSS feeds if they don't work out of the box!
+## 向仪表盘写入 HTML
 
-## Write HTML into the dashboard
+### 显示最新摄像头画面
 
-### Show latest camera feed
+#### `@matheusvellone` 提供
 
-#### `by @matheusvellone`
-
-The `message.content` config entry accepts HTML code, so you can add images.
-If you use Frigate, or have any `latest.jpg` URL for your camera, you can add it to your dashboard. You can also style the `div`/`img` tags to look nicer on your dashboard.
+`message.content` 配置项接受 HTML 代码，因此您可以添加图片。
+如果您使用 Frigate，或者有摄像头的任何 `latest.jpg` URL，您可以将其添加到仪表盘。您还可以对 `div`/`img` 标签进行样式调整，使其在仪表盘上看起来更美观。
 
 ```yml
 message:
-  title: Cameras
+  title: 摄像头
   content: >
     <div>
       <a href="http://frigate.local:5000/cameras/garage">
@@ -236,11 +239,11 @@ message:
     </div>
 ```
 
-When using Frigate you can even add a live feed to your dashboard, like this:
+使用 Frigate 时，您甚至可以向仪表盘添加实时画面，如下所示：
 
 ```yml
 message:
-  title: Cameras
+  title: 摄像头
   content: >
     <img src="http://frigate.local:5000/api/piscina"/>
 ```

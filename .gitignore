@@ -22,6 +22,14 @@ yarn-error.log*
 
 # App configuration
 config.yml
+config-example.yml
+package-lock.json
+pnpm-lock.yaml
+
+# Local files
+配置.txt
+样例.html
+homarr.png
 
 .drone.yml
 

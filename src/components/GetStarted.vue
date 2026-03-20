@@ -1,15 +1,15 @@
 <template>
   <article>
     <div class="m-6 has-text-centered py-6 title">
-      <p class="is-size-5 mb-2">No configuration found!</p>
-      <p>Check out the documentation to start building your dashboard.</p>
+      <p class="is-size-5 mb-2">{{ $t("getStarted.title") }}</p>
+      <p>{{ $t("getStarted.description") }}</p>
       <p>
         <a
           class="button is-primary mt-5 has-text-weight-bold"
           href="https://github.com/bastienwirtz/homer/blob/main/docs/configuration.md#configuration"
           target="_blank"
         >
-          Get started →
+          {{ $t("getStarted.button") }}
         </a>
       </p>
     </div>

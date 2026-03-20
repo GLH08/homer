@@ -1,19 +1,20 @@
 <template>
-  <search class="search-bar">
+  <div class="search-bar">
     <form role="search">
-      <label for="search" class="search-label"></label>
+      <i class="fas fa-search search-icon"></i>
       <input
         id="search"
         ref="search"
         name="search"
         type="search"
         :value="value"
+        :placeholder="$t('search.placeholder')"
         @input.stop="search($event.target.value)"
         @keydown.enter.exact.prevent="open()"
         @keydown.alt.enter.prevent="open('_blank')"
       />
     </form>
-  </search>
+  </div>
 </template>
 
 <script>
@@ -89,4 +90,53 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.search-bar {
+  position: relative;
+  display: inline-block;
+
+  form {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--outline);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  input {
+    border: none;
+    background-color: var(--surface-container-low);
+    border-radius: 8px;
+    padding: 4px 10px 4px 26px;
+    color: var(--text);
+    height: 30px;
+    width: 30px;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+
+    &:focus {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--highlight-primary);
+      outline: none;
+      width: 120px;
+    }
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:focus::placeholder {
+      color: var(--outline);
+    }
+  }
+}
+</style>

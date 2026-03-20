@@ -7,9 +7,9 @@
   >
     <i class="fa-solid fa-triangle-exclamation"></i>
     <h1>
-      Network unreachable
+      {{ $t("connectivity.networkUnreachable") }}
       <button
-        aria-label="Retry connection check"
+        :aria-label="$t('connectivity.retryConnection')"
         class="retry-button"
         @click="checkOffline"
       >
@@ -19,7 +19,7 @@
     <p>
       <a
         href="https://github.com/bastienwirtz/homer/blob/main/docs/configuration.md#connectivity-checks"
-        >More information →</a
+        >{{ $t("connectivity.moreInfo") }}</a
       >
     </p>
   </div>

@@ -116,6 +116,7 @@ import DarkMode from "./components/DarkMode.vue";
 import DynamicTheme from "./components/DynamicTheme.vue";
 
 import defaultConfig from "./assets/defaults.yml?raw";
+import { t } from "./i18n/index.js";
 
 export default {
   name: "App",
@@ -179,7 +180,7 @@ export default {
         }
       } catch (error) {
         console.log(error);
-        config = this.handleErrors("⚠️ Error loading configuration", error);
+        config = this.handleErrors(t("app.errorLoadingConfig"), error);
       }
       this.config = merge(defaults, config);
       this.services = this.config.services;
@@ -239,7 +240,7 @@ export default {
         const service = this.services[0].items[0];
         window.open(service.url, target || service.target || "_self");
       } catch {
-        console.warn("fail to open service");
+        console.warn(t("app.failToOpenService"));
       }
     },
     filterServices: function (filter) {

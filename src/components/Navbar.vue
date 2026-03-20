@@ -5,7 +5,7 @@
         <div class="navbar-brand">
           <a
             role="button"
-            aria-label="menu"
+            :aria-label="$t('navbar.menu')"
             aria-expanded="false"
             class="navbar-burger"
             :class="{ 'is-active': showMenu }"
