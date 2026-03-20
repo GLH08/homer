@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# 防止多次同时构建，新推送会取消之前的构建
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
