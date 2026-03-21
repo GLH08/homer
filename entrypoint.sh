@@ -26,8 +26,8 @@ replace_env_vars_in_file() {
             PATH|HOME|USER|PWD|SHELL|TERM|HOSTNAME|IFS) continue ;;
         esac
         value=$(eval echo \$$var 2>/dev/null)
-        # 转义 value 中的特殊字符（/ 和 &）
-        value=$(echo "$value" | sed 's/[&/]/\\&/g')
+        # 转义 sed 分隔符相关的特殊字符（/、|、&）
+        value=$(echo "$value" | sed 's/[&\/|]/\\&/g')
         SED_CMD="${SED_CMD} -e s|\${${var}}|${value}|g"
     done
 
