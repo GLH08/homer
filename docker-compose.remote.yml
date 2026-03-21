@@ -20,7 +20,7 @@ services:
     environment:
       - INIT_ASSETS=0
     volumes:
-      - ./config.yml:/www/assets/config.yml
+      - ./config.yml:/www/assets/config.yml.template:ro
     env_file:
       - .env
     healthcheck:

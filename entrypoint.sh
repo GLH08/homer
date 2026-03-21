@@ -3,38 +3,55 @@
 # Homer 环境变量替换 + 启动脚本
 
 CONFIG_FILE="/www/assets/config.yml"
+TEMPLATE_FILE="/www/assets/config.yml.template"
 
 # 替换环境变量
 replace_env_vars_in_file() {
-    if [ ! -f "$CONFIG_FILE" ]; then
-        return
+    # 如果存在模板文件，生成 config.yml
+    if [ -f "$TEMPLATE_FILE" ]; then
+        cp "$TEMPLATE_FILE" "$CONFIG_FILE.tmp"
+        
+        for var in $(set | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' | cut -d= -f1); do
+            case "$var" in
+                PATH|HOME|USER|PWD|SHELL|TERM|HOSTNAME|IFS) continue ;;
+            esac
+            value=$(eval echo \$$var 2>/dev/null)
+            value=$(echo "$value" | sed 's/[&\/|]/\\&/g')
+            
+            if grep -q "\${$var}" "$CONFIG_FILE.tmp" 2>/dev/null; then
+                # 使用双引号防止带空格的 value 造成命令分割错误
+                sed -i "s|\${${var}}|${value}|g" "$CONFIG_FILE.tmp"
+            fi
+        done
+        
+        mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+        echo "[Homer] Environment variables replaced from template"
+    else
+        # 兼容旧逻辑
+        if [ ! -f "$CONFIG_FILE" ]; then
+            return
+        fi
+
+        cp "$CONFIG_FILE" "$CONFIG_FILE.tmp"
+        for var in $(set | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' | cut -d= -f1); do
+            case "$var" in
+                PATH|HOME|USER|PWD|SHELL|TERM|HOSTNAME|IFS) continue ;;
+            esac
+            value=$(eval echo \$$var 2>/dev/null)
+            value=$(echo "$value" | sed 's/[&\/|]/\\&/g')
+            if grep -q "\${$var}" "$CONFIG_FILE.tmp" 2>/dev/null; then
+                sed -i "s|\${${var}}|${value}|g" "$CONFIG_FILE.tmp"
+            fi
+        done
+        
+        if cat "$CONFIG_FILE.tmp" > "$CONFIG_FILE" 2>/dev/null; then
+            rm "$CONFIG_FILE.tmp"
+            echo "[Homer] Environment variables replaced in-place"
+        else
+            rm "$CONFIG_FILE.tmp"
+            echo "[Homer] Warning: Could not replace environment variables in-place (possibly ready-only or bind mount issue)"
+        fi
     fi
-
-    # 检查是否包含需要替换的变量
-    if ! grep -q '\${[A-Za-z_][A-Za-z0-9_]*}' "$CONFIG_FILE" 2>/dev/null; then
-        return
-    fi
-
-    # 使用 sed 一次性替换所有 ${VAR} 格式的变量
-    # 构建 sed 替换命令
-    SED_CMD=""
-
-    # 遍历所有环境变量，生成替换规则
-    for var in $(set | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' | cut -d= -f1); do
-        # 跳过内部变量
-        case "$var" in
-            PATH|HOME|USER|PWD|SHELL|TERM|HOSTNAME|IFS) continue ;;
-        esac
-        value=$(eval echo \$$var 2>/dev/null)
-        # 转义 sed 分隔符相关的特殊字符（/、|、&）
-        value=$(echo "$value" | sed 's/[&\/|]/\\&/g')
-        SED_CMD="${SED_CMD} -e s|\${${var}}|${value}|g"
-    done
-
-    # 执行替换
-    sed ${SED_CMD} "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
-    mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
-    echo "[Homer] Environment variables replaced"
 }
 
 # 默认资源配置（原始逻辑）
