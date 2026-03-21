@@ -28,7 +28,7 @@ replace_env_vars_in_file() {
         value=$(eval echo \$$var 2>/dev/null)
         # 转义 value 中的特殊字符（/ 和 &）
         value=$(echo "$value" | sed 's/[&/]/\\&/g')
-        SED_CMD="${SED_CMD} -e s/\${${var}}/${value}/g"
+        SED_CMD="${SED_CMD} -e s|\${${var}}|${value}|g"
     done
 
     # 执行替换
@@ -38,9 +38,9 @@ replace_env_vars_in_file() {
 }
 
 # 默认资源配置（原始逻辑）
-if [[ "${INIT_ASSETS}" == "1" ]] && [[ ! -f "/www/assets/config.yml" ]]; then
+if [ "${INIT_ASSETS}" = "1" ] && [ ! -f "/www/assets/config.yml" ]; then
     echo "No configuration found, installing default config & assets"
-    if [[ -w "/www/assets/" ]]; then
+    if [ -w "/www/assets/" ]; then
         while true; do echo n; done | cp -Ri /www/default-assets/* /www/assets/
         yes n | cp -i /www/default-assets/config.yml.dist /www/assets/config.yml
     else
