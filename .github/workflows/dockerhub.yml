@@ -3,6 +3,8 @@ name: Dockerhub
 
 on:
   push:
+    branches:
+      - main
     tags: [v*]
 
 jobs:
@@ -43,6 +45,7 @@ jobs:
             b4bz/homer:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
           platforms: linux/amd64,linux/arm/v7,linux/arm/v6,linux/arm64
           build-args: |
             VERSION_TAG=${{ github.ref_name }}
